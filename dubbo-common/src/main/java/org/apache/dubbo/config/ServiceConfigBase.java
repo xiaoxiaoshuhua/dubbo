@@ -230,6 +230,7 @@ public abstract class ServiceConfigBase<T> extends AbstractServiceConfig {
         computeValidProtocolIds();
         if (StringUtils.isEmpty(protocolIds)) {
             if (CollectionUtils.isEmpty(protocols)) {
+                // 初始化protocol为默认值
                 List<ProtocolConfig> protocolConfigs = ApplicationModel.getConfigManager().getDefaultProtocols();
                 if (protocolConfigs.isEmpty()) {
                     protocolConfigs = new ArrayList<>(1);

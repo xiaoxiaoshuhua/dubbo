@@ -425,9 +425,12 @@ public class RegistryProtocol implements Protocol {
             directory.setRegisteredConsumerUrl(subscribeUrl);
             registry.register(directory.getRegisteredConsumerUrl());
         }
+        // 构建路由链
         directory.buildRouterChain(subscribeUrl);
         directory.subscribe(toSubscribeUrl(subscribeUrl));
 
+        //构建好cluster的拦截器链条
+        // cluster根据directory来构建invoker的链
         Invoker<T> invoker = cluster.join(directory);
         List<RegistryProtocolListener> listeners = findRegistryProtocolListeners(url);
         if (CollectionUtils.isEmpty(listeners)) {

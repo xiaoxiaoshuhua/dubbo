@@ -189,6 +189,7 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
             bootstrap.init();
         }
 
+        //初始化各种子配置
         checkAndUpdateSubConfigs();
 
         //init serviceMetadata
@@ -217,6 +218,7 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
         // Use default configs defined explicitly with global scope
         completeCompoundConfigs();
         checkDefault();
+        // 初始化protocols
         checkProtocol();
         // init some null configuration.
         List<ConfigInitializer> configInitializers = ExtensionLoader.getExtensionLoader(ConfigInitializer.class)
@@ -284,6 +286,7 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
     }
 
 
+    // 暴露服务?
     protected synchronized void doExport() {
         if (unexported) {
             throw new IllegalStateException("The service " + interfaceClass.getName() + " has already unexported!");
@@ -325,6 +328,7 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
         }
     }
 
+    // 暴露服务核心代码
     private void doExportUrlsFor1Protocol(ProtocolConfig protocolConfig, List<URL> registryURLs) {
         String name = protocolConfig.getName();
         if (StringUtils.isEmpty(name)) {
@@ -345,6 +349,7 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
         AbstractConfig.appendParameters(map, this);
         if (CollectionUtils.isNotEmpty(getMethods())) {
             for (MethodConfig method : getMethods()) {
+                // 这里主要是把方法中的参数匹配进AbstractConfig的parameters集合中，方便后续匹配
                 AbstractConfig.appendParameters(map, method, method.getName());
                 String retryKey = method.getName() + ".retry";
                 if (map.containsKey(retryKey)) {
@@ -420,6 +425,7 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
         /**
          * Here the token value configured by the provider is used to assign the value to ServiceConfig#token
          */
+        // token是干嘛用的
         if(ConfigUtils.isEmpty(token) && provider != null) {
             token = provider.getToken();
         }
@@ -435,6 +441,7 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
         serviceMetadata.getAttachments().putAll(map);
 
         // export service
+        // 暴露服务核心逻辑
         String host = findConfigedHosts(protocolConfig, registryURLs, map);
         Integer port = findConfigedPorts(protocolConfig, name, map);
         URL url = new URL(name, host, port, getContextPath(protocolConfig).map(p -> p + "/" + path).orElse(path), map);
@@ -476,6 +483,7 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
                         }
 
                         // For providers, this is used to enable custom proxy to generate invoker
+                        // proxy具体是长啥样
                         String proxy = url.getParameter(PROXY_KEY);
                         if (StringUtils.isNotEmpty(proxy)) {
                             registryURL = registryURL.addParameter(PROXY_KEY, proxy);
@@ -484,6 +492,7 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
                         Invoker<?> invoker = PROXY_FACTORY.getInvoker(ref, (Class) interfaceClass, registryURL.addParameterAndEncoded(EXPORT_KEY, url.toFullString()));
                         DelegateProviderMetaDataInvoker wrapperInvoker = new DelegateProviderMetaDataInvoker(invoker, this);
 
+                        // 暴露dubbo服务，封装了底层如何建立网络链接，与zk进行交互等核心逻辑
                         Exporter<?> exporter = PROTOCOL.export(wrapperInvoker);
                         exporters.add(exporter);
                     }

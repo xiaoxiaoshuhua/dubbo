@@ -43,6 +43,7 @@ public interface ClusterInterceptor {
      * @return
      * @throws RpcException
      */
+    // cluster拦截器，这是怎么调用到
     default Result intercept(AbstractClusterInvoker<?> clusterInvoker, Invocation invocation) throws RpcException {
         return clusterInvoker.invoke(invocation);
     }

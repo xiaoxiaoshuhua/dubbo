@@ -43,6 +43,7 @@ public class InvokerInvocationHandler implements InvocationHandler {
         }
     }
 
+    // 远程服务调用
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         if (method.getDeclaringClass() == Object.class) {

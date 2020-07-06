@@ -44,6 +44,11 @@ import static org.apache.dubbo.common.constants.CommonConstants.RETRIES_KEY;
  * <a href="http://en.wikipedia.org/wiki/Failover">Failover</a>
  *
  */
+
+/**
+ * failover 集群容错的invoke
+ * @param <T>
+ */
 public class FailoverClusterInvoker<T> extends AbstractClusterInvoker<T> {
 
     private static final Logger logger = LoggerFactory.getLogger(FailoverClusterInvoker.class);

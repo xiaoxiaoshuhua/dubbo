@@ -128,6 +128,15 @@ public abstract class AbstractClusterInvoker<T> implements Invoker<T> {
      * @return the invoker which will final to do invoke.
      * @throws RpcException exception
      */
+    /**
+     * 选择一个invoke对象，用于调用，考虑负载均衡和沾滞特性等
+     * @param loadbalance
+     * @param invocation
+     * @param invokers
+     * @param selected
+     * @return
+     * @throws RpcException
+     */
     protected Invoker<T> select(LoadBalance loadbalance, Invocation invocation,
                                 List<Invoker<T>> invokers, List<Invoker<T>> selected) throws RpcException {
 
@@ -167,6 +176,7 @@ public abstract class AbstractClusterInvoker<T> implements Invoker<T> {
         if (invokers.size() == 1) {
             return invokers.get(0);
         }
+        // 负载均衡核心逻辑
         Invoker<T> invoker = loadbalance.select(invokers, getUrl(), invocation);
 
         //If the `invoker` is in the  `selected` or invoker is unavailable && availablecheck is true, reselect.

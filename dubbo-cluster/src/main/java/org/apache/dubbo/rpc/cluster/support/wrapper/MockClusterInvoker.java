@@ -68,13 +68,14 @@ public class MockClusterInvoker<T> implements Invoker<T> {
         return directory.getInterface();
     }
 
+    // 远程服务 调用逻辑
     @Override
     public Result invoke(Invocation invocation) throws RpcException {
         Result result = null;
 
         String value = directory.getConsumerUrl().getMethodParameter(invocation.getMethodName(), MOCK_KEY, Boolean.FALSE.toString()).trim();
         if (value.length() == 0 || "false".equalsIgnoreCase(value)) {
-            //no mock
+            //no mock 为什么调用到是mock类型的clusterInvoker
             result = this.invoker.invoke(invocation);
         } else if (value.startsWith("force")) {
             if (logger.isWarnEnabled()) {

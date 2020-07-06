@@ -27,6 +27,8 @@ import org.apache.dubbo.demo.DemoService;
 import java.util.concurrent.CountDownLatch;
 
 public class Application {
+
+    //dubbo启动入口
     public static void main(String[] args) throws Exception {
         if (isClassic(args)) {
             startWithExport();

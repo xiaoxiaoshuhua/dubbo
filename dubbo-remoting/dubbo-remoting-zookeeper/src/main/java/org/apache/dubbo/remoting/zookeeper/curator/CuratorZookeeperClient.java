@@ -209,6 +209,7 @@ public class CuratorZookeeperClient extends AbstractZookeeperClient<CuratorZooke
         try {
             return client.getChildren().usingWatcher(listener).forPath(path);
         } catch (NoNodeException e) {
+            logger.error("添加watcher失败");
             return null;
         } catch (Exception e) {
             throw new IllegalStateException(e.getMessage(), e);

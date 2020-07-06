@@ -68,6 +68,7 @@ public interface Protocol {
      * @throws RpcException when there's any error while connecting to the service provider
      */
     @Adaptive
+    //寻找一下调用的地方
     <T> Invoker<T> refer(Class<T> type, URL url) throws RpcException;
 
     /**

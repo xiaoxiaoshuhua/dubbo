@@ -44,6 +44,7 @@ public class Application {
         reference.setInterface(DemoService.class);
         reference.setGeneric("true");
 
+        // 初始化dubbo中的对象
         DubboBootstrap bootstrap = DubboBootstrap.getInstance();
         bootstrap.application(new ApplicationConfig("dubbo-demo-api-consumer"))
                 .registry(new RegistryConfig("zookeeper://127.0.0.1:2181"))

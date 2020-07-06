@@ -261,10 +261,11 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
         initialized = true;
 
         // dispatch a ReferenceConfigInitializedEvent since 2.7.4
-        dispatch(new ReferenceConfigInitializedEvent(this, invoker));
+        dispatch(new ReferenceConfigInitializedEvent( this, invoker));
     }
 
     @SuppressWarnings({"unchecked", "rawtypes", "deprecation"})
+    // 创建代理
     private T createProxy(Map<String, String> map) {
         if (shouldJvmRefer(map)) {
             URL url = new URL(LOCAL_PROTOCOL, LOCALHOST_VALUE, 0, interfaceClass.getName()).addParameters(map);

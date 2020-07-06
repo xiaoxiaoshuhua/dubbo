@@ -40,6 +40,10 @@ public interface RegistryService {
      *
      * @param url  Registration information , is not allowed to be empty, e.g: dubbo://10.20.153.10/org.apache.dubbo.foo.BarService?version=1.0.0&application=kylin
      */
+    /**
+     * 注册数据，比如：提供者地址，消费者地址，路由规则，覆盖规则，等数据
+     * @param url
+     */
     void register(URL url);
 
     /**
@@ -68,6 +72,15 @@ public interface RegistryService {
      * @param url      Subscription condition, not allowed to be empty, e.g. consumer://10.20.153.10/org.apache.dubbo.foo.BarService?version=1.0.0&application=kylin
      * @param listener A listener of the change event, not allowed to be empty
      */
+    /**
+     * 订阅符合条件的已注册数据，当有注册数据变更时自动推送。
+     * consumers ，服务消费者列表。
+     * providers ，服务提供者列表。
+     * routers ，路由规则列表。
+     * configurations ，配置规则列表。
+     * @param url
+     * @param listener
+     */
     void subscribe(URL url, NotifyListener listener);
 
     /**
@@ -88,6 +101,11 @@ public interface RegistryService {
      * @param url Query condition, is not allowed to be empty, e.g. consumer://10.20.153.10/org.apache.dubbo.foo.BarService?version=1.0.0&application=kylin
      * @return The registered information list, which may be empty, the meaning is the same as the parameters of {@link org.apache.dubbo.registry.NotifyListener#notify(List<URL>)}.
      * @see org.apache.dubbo.registry.NotifyListener#notify(List)
+     */
+    /**
+     * 查询符合条件的已注册数据，与订阅的推模式相对应，这里为拉模式，只返回一次结果。
+     * @param url
+     * @return
      */
     List<URL> lookup(URL url);
 

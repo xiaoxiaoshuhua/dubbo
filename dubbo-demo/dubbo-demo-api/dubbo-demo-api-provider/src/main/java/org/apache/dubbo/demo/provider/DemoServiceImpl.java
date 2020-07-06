@@ -35,6 +35,7 @@ public class DemoServiceImpl implements DemoService {
 
     @Override
     public CompletableFuture<String> sayHelloAsync(String name) {
+        System.out.println("调用到这边");
         return null;
     }
 

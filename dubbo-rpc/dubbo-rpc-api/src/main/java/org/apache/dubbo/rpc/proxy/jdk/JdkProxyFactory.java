@@ -32,6 +32,10 @@ public class JdkProxyFactory extends AbstractProxyFactory {
 
     @Override
     @SuppressWarnings("unchecked")
+    /**
+     * 生成代理对象
+     * 参数invoker是做啥的？
+     */
     public <T> T getProxy(Invoker<T> invoker, Class<?>[] interfaces) {
         return (T) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), interfaces, new InvokerInvocationHandler(invoker));
     }

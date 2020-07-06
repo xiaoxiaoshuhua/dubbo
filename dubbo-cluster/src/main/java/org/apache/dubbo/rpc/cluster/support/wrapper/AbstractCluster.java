@@ -34,6 +34,7 @@ import static org.apache.dubbo.common.constants.CommonConstants.REFERENCE_INTERC
 
 public abstract class AbstractCluster implements Cluster {
 
+    // 构建cluster的拦截器链条
     private <T> Invoker<T> buildClusterInterceptors(AbstractClusterInvoker<T> clusterInvoker, String key) {
         AbstractClusterInvoker<T> last = clusterInvoker;
         List<ClusterInterceptor> interceptors = ExtensionLoader.getExtensionLoader(ClusterInterceptor.class).getActivateExtension(clusterInvoker.getUrl(), key);
@@ -84,11 +85,13 @@ public abstract class AbstractCluster implements Cluster {
             return clusterInvoker.isAvailable();
         }
 
+        // 调用远程服务
         @Override
         public Result invoke(Invocation invocation) throws RpcException {
             Result asyncResult;
             try {
                 interceptor.before(next, invocation);
+                // 进入负载均衡逻辑
                 asyncResult = interceptor.intercept(next, invocation);
             } catch (Exception e) {
                 // onError callback

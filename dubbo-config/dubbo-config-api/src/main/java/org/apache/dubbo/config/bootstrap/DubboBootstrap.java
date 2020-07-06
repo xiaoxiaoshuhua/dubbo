@@ -732,6 +732,7 @@ public class DubboBootstrap extends GenericEventListener {
                 logger.info(NAME + " is starting...");
             }
             // 1. export Dubbo Services
+            // 暴露服务的入口
             exportServices();
 
             // Not only provider register
@@ -742,6 +743,7 @@ public class DubboBootstrap extends GenericEventListener {
                 registerServiceInstance();
             }
 
+            // 引用服务的入口
             referServices();
 
             if (logger.isInfoEnabled()) {
@@ -891,6 +893,7 @@ public class DubboBootstrap extends GenericEventListener {
         }
     }
 
+    // 暴露服务
     private void exportServices() {
         configManager.getServices().forEach(sc -> {
             // TODO, compatible with ServiceConfig.export()
