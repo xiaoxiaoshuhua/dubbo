@@ -43,7 +43,7 @@ public interface ClusterInterceptor {
      * @return
      * @throws RpcException
      */
-    // cluster拦截器，这是怎么调用到
+    // cluster拦截器的主要逻辑的执行部分，如果需要加自定义拦截器，可以去实现before方法和after方法
     default Result intercept(AbstractClusterInvoker<?> clusterInvoker, Invocation invocation) throws RpcException {
         return clusterInvoker.invoke(invocation);
     }

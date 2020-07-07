@@ -49,14 +49,19 @@ public class ProtocolFilterWrapper implements Protocol {
         this.protocol = protocol;
     }
 
+    // 该invoker是需要export或者refer的invoker。构建invoke链路？构建filter链路，其中原始的invoker则排则链路的最末尾，
+    // 而返回的invoker则是最外层的filter所对应的invoker
+    // 若invoker开始触发invoke方法，则首先遍历执行filter的invoke逻辑，最后一步执行原始业务的invoke逻辑
     private static <T> Invoker<T> buildInvokerChain(final Invoker<T> invoker, String key, String group) {
         Invoker<T> last = invoker;
         List<Filter> filters = ExtensionLoader.getExtensionLoader(Filter.class).getActivateExtension(invoker.getUrl(), key, group);
 
         if (!filters.isEmpty()) {
+            // 有几个filter就构建几个invoker，这里的invoker是做啥的？filterInvoker?
             for (int i = filters.size() - 1; i >= 0; i--) {
                 final Filter filter = filters.get(i);
                 final Invoker<T> next = last;
+                //这里的invoker包装了外部invoker的URL等信息，但是invoke逻辑则执行的是filter的invoke方法
                 last = new Invoker<T>() {
 
                     @Override
