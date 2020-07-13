@@ -42,6 +42,10 @@ import static org.apache.dubbo.rpc.Constants.ACTIVES_KEY;
  * @see Filter
  */
 @Activate(group = CONSUMER, value = ACTIVES_KEY)
+/**
+ * 消费者调用的某个URL中的某个method方法最大能够同时调用的次数
+ * 最大调用次数是指当前正在进行调用且没有结束的数量
+ */
 public class ActiveLimitFilter implements Filter, Filter.Listener2 {
 
     private static final String ACTIVELIMIT_FILTER_START_TIME = "activelimit_filter_start_time";
@@ -52,11 +56,17 @@ public class ActiveLimitFilter implements Filter, Filter.Listener2 {
         String methodName = invocation.getMethodName();
         int max = invoker.getUrl().getMethodParameter(methodName, ACTIVES_KEY, 0);
         final RpcStatus rpcStatus = RpcStatus.getStatus(invoker.getUrl(), invocation.getMethodName());
+        // 如果调用次数超过max设定的值
         if (!RpcStatus.beginCount(url, methodName, max)) {
             long timeout = invoker.getUrl().getMethodParameter(invocation.getMethodName(), TIMEOUT_KEY, 0);
             long start = System.currentTimeMillis();
             long remain = timeout;
+            // 注意理解此处的控制方式：
+            // 首先给该方法对应的rpcStatus进行加锁，这样确保同时只会有一个consumer的调用在等待，其他的consumer（同一台机器的多个consumer）因为
+            // 获取不到锁，只能等待
             synchronized (rpcStatus) {
+                // 当获取到锁，进入等待状态以后，循环检查当前的并发的数量有没有低于max，如果没有低于max，则使用wait方法释放掉当前主线程持有的锁，阻塞住
+                // 直到过了 remain 设定的超时时间以后，再往下走（此处超时直接抛出异常，消费者无法继续往下调用业务逻辑）
                 while (!RpcStatus.beginCount(url, methodName, max)) {
                     try {
                         rpcStatus.wait(remain);
