@@ -44,7 +44,7 @@ import static org.apache.dubbo.rpc.Constants.ACTIVES_KEY;
 @Activate(group = CONSUMER, value = ACTIVES_KEY)
 /**
  * 消费者调用的某个URL中的某个method方法最大能够同时调用的次数
- * 最大调用次数是指当前正在进行调用且没有结束的数量
+ * 最大调用次数是指当前正在进行调用且没有结束的数量（如果调用结束的话，怎么同步更新到RpcStatus里面呢）
  */
 public class ActiveLimitFilter implements Filter, Filter.Listener2 {
 

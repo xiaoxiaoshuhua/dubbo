@@ -32,6 +32,7 @@ import static org.apache.dubbo.rpc.Constants.DEFAULT_TPS_LIMIT_INTERVAL;
  *
  * @see org.apache.dubbo.rpc.filter.TpsLimitFilter
  */
+// tps限流器
 public class DefaultTPSLimiter implements TPSLimiter {
 
     private final ConcurrentMap<String, StatItem> stats = new ConcurrentHashMap<String, StatItem>();

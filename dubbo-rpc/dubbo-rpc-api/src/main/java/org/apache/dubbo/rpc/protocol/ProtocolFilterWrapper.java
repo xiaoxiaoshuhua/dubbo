@@ -109,6 +109,7 @@ public class ProtocolFilterWrapper implements Protocol {
                                     }
                                 }
                             } else if (filter instanceof Filter.Listener2) {
+                                // 此处invoke方法调用完成以后，回掉对应的filter中的listener方法，来完成过滤器中的一些后续逻辑的处理
                                 Filter.Listener2 listener = (Filter.Listener2) filter;
                                 if (t == null) {
                                     listener.onMessage(r, invoker, invocation);
